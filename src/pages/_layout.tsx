@@ -1,5 +1,5 @@
-import React, { Suspense } from "react"
-import { Outlet } from 'react-router-dom'
+import React, { Suspense } from 'react';
+import { Outlet } from 'react-router-dom';
 
 const Layout: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ const Layout: React.FC = () => {
         <Outlet />
       </Suspense>
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

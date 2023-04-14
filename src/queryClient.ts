@@ -20,7 +20,7 @@ export const getClient = (() => {
             staleTime: 1000 * 60,
             refetchOnMount: false,
             refetchOnReconnect: false,
-            refetchOnWindowFocus: false
+            refetchOnWindowFocus: false,
           },
         },
       });
