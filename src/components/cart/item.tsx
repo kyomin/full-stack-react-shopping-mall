@@ -55,6 +55,12 @@ const CartItem = ({ id, imageUrl, price, title, amount }: Cart) => {
   );
   const handleUpdateAmount = (e: SyntheticEvent) => {
     const amount = Number((e.target as HTMLInputElement).value);
+
+    // 최소 수량 예외 처리(0은 삭제나 다름 없으므로 1이 최소)
+    if (amount < 1) {
+      return;
+    }
+
     updateCart({ id, amount });
   };
 
@@ -97,6 +103,7 @@ const CartItem = ({ id, imageUrl, price, title, amount }: Cart) => {
         className='cart-item-amount'
         type='number'
         value={amount}
+        min={1}
         onChange={handleUpdateAmount}
       />
       <button
