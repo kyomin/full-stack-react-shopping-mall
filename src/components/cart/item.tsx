@@ -95,7 +95,11 @@ const CartItem = ({ id, imageUrl, price, title, amount }: Cart) => {
 
   return (
     <li className='cart-item'>
-      <input className='cart-item-check-inp' type='checkbox' />
+      <input
+        className='cart-item-check-inp'
+        type='checkbox'
+        name={`select-item`}
+      />
       <img className='cart-item-image' src={imageUrl} />
       <p className='cart-item-price'>{price}</p>
       <p className='cart-item-title'>{title}</p>
