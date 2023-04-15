@@ -1,6 +1,12 @@
 import { graphql } from 'msw';
 import { GET_PRODUCTS, GET_PRODUCT } from '../graphql/products';
-import { Cart, GET_CART, ADD_CART, UPDATE_CART } from '../graphql/cart';
+import {
+  Cart,
+  GET_CART,
+  ADD_CART,
+  UPDATE_CART,
+  DELETE_CART,
+} from '../graphql/cart';
 
 const mockProducts = (() =>
   Array.from({ length: 20 }).map((_, i) => ({
@@ -70,5 +76,12 @@ export const handlers = [
     cartData = newData;
 
     return res(ctx.data(newItem));
+  }),
+  graphql.mutation(DELETE_CART, ({ variables: { id } }, res, ctx) => {
+    const newData = { ...cartData };
+    delete newData[id]; // 객체 속성 지우기
+    cartData = newData;
+
+    return res(ctx.data(id));
   }),
 ];
