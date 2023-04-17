@@ -21,7 +21,11 @@ const CartPage = () => {
   return (
     <div>
       <h2>장바구니</h2>
-      <CartList items={cartItems} />
+      {cartItems.length ? (
+        <CartList items={cartItems} />
+      ) : (
+        <div>장바구니가 비었습니다.</div>
+      )}
     </div>
   );
 };
