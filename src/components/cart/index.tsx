@@ -3,7 +3,8 @@ import { Cart } from '../../graphql/cart';
 import CartItem from './item';
 import { useRecoilState } from 'recoil';
 import { checkedCartState } from '../../recoils/cart';
-import WillPay from './willPay';
+import WillPay from '../willPay/willPay';
+import { useNavigate } from 'react-router-dom';
 
 const CartList = ({ items }: { items: Cart[] }) => {
   const [checkedCartData, setCheckedCartData] =
@@ -11,6 +12,7 @@ const CartList = ({ items }: { items: Cart[] }) => {
   const formRef = useRef<HTMLFormElement>(null);
   const checkboxRefs = items.map(() => createRef<HTMLInputElement>());
   const [formData, setFormData] = useState<FormData>();
+  const navigate = useNavigate();
 
   const setAllCheckedFromItems = () => {
     // 개별 아이템 체크박스 선택 시
@@ -37,7 +39,7 @@ const CartList = ({ items }: { items: Cart[] }) => {
     if (!formRef.current) {
       return;
     }
-    
+
     const targetInput = e?.target as HTMLInputElement;
 
     if (targetInput && targetInput.classList.contains('select-all')) {
@@ -48,6 +50,14 @@ const CartList = ({ items }: { items: Cart[] }) => {
 
     const data = new FormData(formRef.current);
     setFormData(data);
+  };
+
+  const handleSubmit = () => {
+    if (checkedCartData.length) {
+      navigate('/payment');
+    } else {
+      alert('결제할 대상이 없습니다.');
+    }
   };
 
   useEffect(() => {
@@ -88,7 +98,7 @@ const CartList = ({ items }: { items: Cart[] }) => {
           ))}
         </ul>
       </form>
-      <WillPay />
+      <WillPay submitTitle='결제 화면으로' handleSubmit={handleSubmit} />
     </div>
   );
 };
