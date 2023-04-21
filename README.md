@@ -17,4 +17,13 @@ React 관련 여러 기술들을 사용하여 간단한 쇼핑몰을 만들어 �
 - 장바구니 API 적용
 - 낙관적 업데이트와 invalidateQueries를 각각 적용하여 장단점 파악해 보기
 - 장바구니 삭제 및 선택하기 기능 구현
-- Uncontrolled Component를 사용해 보기(실무에서는 Controlled Component를 자주 사용하므로)
+- Uncontrolled Component를 사용해 보기(실무에서는 Controlled Component를 자주 사용하므로)   
+   
+# Step 4
+- recoil을 이용하여 장바구니 상태관리
+- 결제 페이지 작성   
+   
+# Step 5
+- 모노레포 도입(yarn workspace)
+- 아폴로 express 서버 환경 설정
+- schema 및 resolver 정의
