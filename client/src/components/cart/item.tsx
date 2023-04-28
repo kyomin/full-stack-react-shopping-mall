@@ -2,11 +2,11 @@ import { useMutation } from 'react-query';
 import { Cart } from '../../graphql/cart';
 import { QueryKeys, getClient, graphqlFetcher } from '../../queryClient';
 import { UPDATE_CART, DELETE_CART } from '../../graphql/cart';
-import { ForwardedRef, RefObject, SyntheticEvent, forwardRef } from 'react';
+import { ForwardedRef, SyntheticEvent, forwardRef } from 'react';
 import ItemData from './itemData';
 
 const CartItem = (
-  { id, imageUrl, price, title, amount }: Cart,
+  { id, amount, product: { imageUrl, price, title } }: Cart,
   ref: ForwardedRef<HTMLInputElement>
 ) => {
   const queryClient = getClient();
@@ -24,36 +24,49 @@ const CartItem = (
         await queryClient.cancelQueries(QueryKeys.CART);
 
         // Snapshot the previous value
-        const prevCart = queryClient.getQueryData<{ [key: string]: Cart }>(
+        const { cart: prevCart } = queryClient.getQueryData<{ cart: Cart[] }>(
           QueryKeys.CART
+        ) || { cart: [] };
+
+        if (!prevCart) {
+          return null;
+        }
+
+        const targetIndex = prevCart.findIndex(
+          (cartItem) => cartItem.id === id
         );
 
         // handle exception
-        if (!prevCart?.[id]) {
+        if (targetIndex === undefined || targetIndex < 0) {
           return prevCart;
         }
 
         // Optimistically update to the new value
-        const newCart = {
-          ...(prevCart || {}),
-          [id]: { ...prevCart[id], amount },
-        };
+        const newCart = [...prevCart];
+        newCart.splice(targetIndex, 1, { ...newCart[targetIndex], amount });
 
-        queryClient.setQueryData(QueryKeys.CART, newCart);
+        queryClient.setQueryData(QueryKeys.CART, { cart: newCart });
         return newCart;
       },
       // When mutate is finished
-      onSuccess: (newValue) => {
-        const prevCart = queryClient.getQueryData<{ [key: string]: Cart }>(
+      onSuccess: ({ updateCart }) => {
+        const { cart: prevCart } = queryClient.getQueryData<{ cart: Cart[] }>(
           QueryKeys.CART
+        ) || { cart: [] };
+
+        const targetIndex = prevCart?.findIndex(
+          (cartItem) => cartItem.id === updateCart.id
         );
 
-        const newCart = {
-          ...(prevCart || {}),
-          [id]: newValue,
-        };
+        // handle exception
+        if (!prevCart || targetIndex === undefined || targetIndex < 0) {
+          return;
+        }
 
-        queryClient.setQueryData(QueryKeys.CART, newCart);
+        const newCart = [...prevCart];
+        newCart.splice(targetIndex, 1, updateCart);
+
+        queryClient.setQueryData(QueryKeys.CART, { cart: newCart });
       },
     }
   );

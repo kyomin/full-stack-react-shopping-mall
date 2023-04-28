@@ -16,8 +16,8 @@ const Payment = () => {
     useRecoilState(checkedCartState);
   const [modalShown, toggleModal] = useState(false);
 
-  const { mutate: executePay } = useMutation((payInfos: PaymentInfos) =>
-    graphqlFetcher(EXECUTE_PAY, payInfos)
+  const { mutate: executePay } = useMutation((ids: PaymentInfos) =>
+    graphqlFetcher(EXECUTE_PAY, { ids })
   );
 
   const showModal = () => {
@@ -26,15 +26,18 @@ const Payment = () => {
 
   const proceed = () => {
     // 결제 진행 => 실제 결제는 아니고, 결제가 완료된 품목들만 장바구니에서 제거 후
-    const payInfos = checkedCartData.map(({ id }) => id);
-    executePay(payInfos);
-    setCheckedCartData([]);
+    const ids = checkedCartData.map(({ id }) => id);
+    executePay(ids, {
+      onSuccess: () => {
+        setCheckedCartData([]);
+        alert('결제가 완료되었습니다.');
 
-    // 상품 목록으로 이동시키기
-    // 결제가 완료되었으므로 결제 페이지를 사용자로부터 숨긴다.
-    // replace true를 사용한다면, navigate에 적힌 주소로 넘어간 후 뒤로가기를 하더라도 방금의 페이지로 돌아오지 않는다
-    alert('결제가 완료되었습니다.');
-    navigate('/products', { replace: true });
+        // 상품 목록으로 이동시키기
+        // 결제가 완료되었으므로 결제 페이지를 사용자로부터 숨긴다.
+        // replace true를 사용한다면, navigate에 적힌 주소로 넘어간 후 뒤로가기를 하더라도 방금의 페이지로 돌아오지 않는다        
+        navigate('/products', { replace: true });
+      }
+    });    
   };
 
   const cancel = () => {
