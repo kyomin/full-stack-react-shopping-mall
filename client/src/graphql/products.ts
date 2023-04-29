@@ -2,10 +2,10 @@ import { gql } from 'graphql-tag';
 
 export type Product = {
   id: string;
-  imageUrl: string;
-  price: number;
   title: string;
   description: string;
+  price: number;
+  imageUrl: string;
   createdAt: number;
 };
 
