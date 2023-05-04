@@ -4,6 +4,8 @@ import { QueryKeys, graphqlFetcher } from '../../queryClient';
 import { GET_PRODUCTS, Products } from '../../graphql/products';
 import { useEffect, useRef } from 'react';
 import useIntersection from '../../hooks/useIntersection';
+import AdminItem from '../../components/admin/item';
+import AddForm from '../../components/admin/addForm';
 
 const AdminPage = () => {
   const fetchMoreRef = useRef<HTMLDivElement>(null);
@@ -11,7 +13,7 @@ const AdminPage = () => {
 
   const { data, isSuccess, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteQuery<Products>(
-      [QueryKeys.PRODUCTS, true],
+      [QueryKeys.PRODUCTS, 'admin'],
       ({ pageParam = '' }) =>
         graphqlFetcher<Products>(GET_PRODUCTS, {
           cursor: pageParam,
@@ -35,7 +37,8 @@ const AdminPage = () => {
   return (
     <div>
       <h2>어드민</h2>
-      <ProductList list={data?.pages || []} />
+      <AddForm />
+      <ProductList list={data?.pages || []} Item={AdminItem} />
       <div ref={fetchMoreRef}></div>
     </div>
   );

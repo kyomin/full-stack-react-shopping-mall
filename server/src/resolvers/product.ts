@@ -6,14 +6,22 @@ const setJSON = (data: Products) => writeDB(DBField.PRODUCTS, data);
 
 const productResolver: Resolver = {
   Query: {
-    products: (parent, { cursor = '', showDeleted = false }, { db }, info) => {
+    products: (parent, { cursor = '', showDeleted = false }, { db }, info) => {      
+      const [hasCreatedAt, noCreatedAt] = [
+        db.products
+          .filter((product) => !!product.createdAt)
+          .sort((a, b) => b.createdAt! - a.createdAt!),
+        db.products.filter((product) => !product.createdAt),
+      ];
+
       /**
        * 일반 페이지 => 삭제된 것 제외하고 보여준다. => showDeleted = false
        * 어드민 페이지 => 삭제된 것 포함해서 보여준다. => showDeleted = true
        */
       const filteredDB = showDeleted
-        ? db.products
-        : db.products.filter((product) => !!product.createdAt);
+        ? [...hasCreatedAt, ...noCreatedAt]
+        : hasCreatedAt;
+
       const limit = 15; // 15개씩 끊겠다.
       const fromIndex =
         filteredDB.findIndex((product) => product.id === cursor) + 1;

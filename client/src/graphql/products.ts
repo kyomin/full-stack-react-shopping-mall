@@ -38,3 +38,59 @@ export const GET_PRODUCT = gql`
     }
   }
 `;
+
+export const ADD_PRODUCT = gql`
+  mutation ADD_PRODUCT(
+    $title: String!
+    $description: String!
+    $price: Int!
+    $imageUrl: String!
+  ) {
+    addProduct(
+      title: $title
+      description: $description
+      price: $price
+      imageUrl: $imageUrl
+    ) {
+      id
+      title
+      description
+      price
+      imageUrl
+      createdAt
+    }
+  }
+`;
+
+export const UPDATE_PRODUCT = gql`
+  mutation UPDATE_PRODUCT(
+    $id: ID!
+    $title: String
+    $description: String
+    $price: Int
+    $imageUrl: String
+  ) {
+    updateProduct(
+      id: $id
+      title: $title
+      description: $description
+      price: $price
+      imageUrl: $imageUrl
+    ) {
+      id
+      title
+      description
+      price
+      imageUrl
+      createdAt
+    }
+  }
+`;
+
+export const DELETE_PRODUCT = gql`
+  mutation DELETE_PRODUCT($id: ID!) {
+    deleteProduct(id: $id) {
+      id
+    }
+  }
+`;
