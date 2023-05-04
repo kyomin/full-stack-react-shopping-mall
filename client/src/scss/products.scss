@@ -15,3 +15,22 @@
     }
   }
 }
+
+.product-add-form {
+  label {
+    display: flex;
+    margin-top: 10px;
+    justify-content: space-between;
+    align-items: center;
+    width: 30%;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .submit-button-wrap {
+    text-align: center;
+    padding: 10px 0;
+  }
+}

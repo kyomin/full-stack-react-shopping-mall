@@ -37,6 +37,7 @@ const AdminPage = () => {
   return (
     <div>
       <h2>어드민</h2>
+      <h4 style={{textAlign: 'center'}}>상품 등록</h4>
       <AddForm />
       <ProductList list={data?.pages || []} Item={AdminItem} />
       <div ref={fetchMoreRef}></div>

@@ -40,20 +40,26 @@ const AddForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className='product-add-form' onSubmit={handleSubmit}>
       <label>
-        상품명: <input type='text' name='title' required />
+        <p>상품명:</p>
+        <input type='text' name='title' required />
       </label>
       <label>
-        이미지 경로: <input type='text' name='imageUrl' required />
+        <p>이미지 경로:</p>
+        <input type='text' name='imageUrl' required />
       </label>
       <label>
-        상품 가격: <input type='number' name='price' required />
+        <p>상품 가격:</p>
+        <input type='number' name='price' required />
       </label>
       <label>
-        상품 상세: <textarea name='description' />
+        <p>상품 상세:</p>
+        <textarea name='description' />
       </label>
-      <button type='submit'>등록</button>
+      <div className='submit-button-wrap'>
+        <button type='submit'>등록</button>
+      </div>
     </form>
   );
 };
