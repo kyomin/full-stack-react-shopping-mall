@@ -33,7 +33,7 @@ const ProductListPage = () => {
   return (
     <div>
       <h2>상품목록</h2>
-      <ProductList list={data?.pages || []} Item={ProductItem} />
+      <ProductList list={data?.pages || []} />
       <div ref={fetchMoreRef}></div>
     </div>
   );

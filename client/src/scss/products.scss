@@ -17,12 +17,15 @@
 }
 
 .product-add-form {
+  width: 40%;
+  border: 1px solid;
+  padding: 10px;
+
   label {
     display: flex;
     margin-top: 10px;
     justify-content: space-between;
-    align-items: center;
-    width: 30%;
+    align-items: center;    
 
     &:first-child {
       margin-top: 0;
@@ -31,6 +34,34 @@
 
   .submit-button-wrap {
     text-align: center;
+    padding-top: 10px;
+  }
+}
+
+.product-edit-form {
+  border: 1px solid;
+  padding: 10px;
+
+  label {
+    display: flex;
+    margin-top: 10px;
+    justify-content: space-between;
+    align-items: center;    
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .submit-button-wrap {
+    display: flex;
+    justify-content: center;
     padding: 10px 0;
+
+    button {
+      &:first-child {
+        margin-right: 10px;
+      }
+    }
   }
 }

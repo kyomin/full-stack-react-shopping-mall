@@ -1,17 +1,15 @@
 import { SyntheticEvent } from 'react';
 import { useMutation } from 'react-query';
-import { ADD_PRODUCT, Product, Products } from '../../graphql/products';
+import { ADD_PRODUCT, MutableProduct, Product } from '../../graphql/products';
 import { QueryKeys, getClient, graphqlFetcher } from '../../queryClient';
 import arrToObj from '../../utils/arrToObj';
-
-type OmittedProduct = Omit<Product, 'id' | 'createdAt'>;
 
 const AddForm = () => {
   const queryClient = getClient();
 
   const { mutate: addProduct } = useMutation(
     // mutate function call
-    ({ title, imageUrl, price, description }: OmittedProduct) =>
+    ({ title, imageUrl, price, description }: MutableProduct) =>
       graphqlFetcher<Product>(ADD_PRODUCT, {
         title,
         imageUrl,
@@ -36,11 +34,11 @@ const AddForm = () => {
     e.preventDefault();
     const formData = arrToObj([...new FormData(e.target as HTMLFormElement)]);
     formData.price = Number(formData.price);
-    addProduct(formData as OmittedProduct);
+    addProduct(formData as MutableProduct);
   };
 
   return (
-    <form className='product-add-form' onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <label>
         <p>상품명:</p>
         <input type='text' name='title' required />
