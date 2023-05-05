@@ -52,16 +52,21 @@
       margin-top: 0;
     }
   }
+}
 
-  .submit-button-wrap {
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
+.button-wrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
 
-    button {
-      &:first-child {
-        margin-right: 10px;
-      }
+  button {
+    &:first-child {
+      margin-right: 10px;
     }
   }
+}
+
+.deleted-item {
+  font-weight: 700;
+  color: red;
 }

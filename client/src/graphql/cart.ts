@@ -17,7 +17,8 @@ export const GET_CART = gql`
         imageUrl
         price
         title
-        description
+        description,
+        createdAt
       }
     }
   }
