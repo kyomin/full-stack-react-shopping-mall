@@ -2,6 +2,8 @@
 React 관련 여러 기술들을 사용하여 간단한 쇼핑몰을 만들어 보는 프로젝트입니다.   
 깊게는 안 들어가고, 여러 기술들을 체험해 보자는 취지로 시작한 프로젝트입니다.   
    
+![demo](https://user-images.githubusercontent.com/46395776/236482735-c2b74840-4f93-48c4-99b5-5e7eb8408c3b.gif)   
+   
 # 실행
 프로젝트 루트 경로에서 다음 명령어 실행   
 - `npm run server` => 서버 실행
@@ -40,4 +42,8 @@ React 관련 여러 기술들을 사용하여 간단한 쇼핑몰을 만들어 �
 # Step 7
 - 무한 스크롤 작업
 - useInfiniteQuery 사용하기
-- intersectionObserver 사용하기
+- intersectionObserver 사용하기   
+   
+# Step 8
+- 어드민 API 작성
+- 어드민 페이지 목록, 상품 추가, 상품 수정, 상품 삭제 기능 구현
