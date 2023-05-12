@@ -24,4 +24,7 @@ db/
 *.sln
 *.sw?
 
+# config files
+.env
+
 yarn.lock

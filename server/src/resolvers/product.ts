@@ -1,41 +1,64 @@
 import { DBField, writeDB } from '../dbController';
 import { Products, Resolver } from './types';
 import { v4 as uuid } from 'uuid';
+import { db } from '../../firebase';
+import {
+  collection,
+  query,
+  orderBy,
+  where,
+  limit,
+  QueryOrderByConstraint,
+  QueryFieldFilterConstraint,
+  QueryStartAtConstraint,
+  getDocs,
+  startAfter,
+  DocumentData,
+  doc,
+  getDoc,
+} from 'firebase/firestore';
 
+const PAGE_SIZE = 15;
 const setJSON = (data: Products) => writeDB(DBField.PRODUCTS, data);
 
 const productResolver: Resolver = {
   Query: {
-    products: (parent, { cursor = '', showDeleted = false }, { db }, info) => {      
-      const [hasCreatedAt, noCreatedAt] = [
-        db.products
-          .filter((product) => !!product.createdAt)
-          .sort((a, b) => b.createdAt! - a.createdAt!),
-        db.products.filter((product) => !product.createdAt),
-      ];
+    products: async (parent, { cursor = '', showDeleted = false }) => {
+      const products = collection(db, 'products');
+      const queryOptions: (
+        | QueryOrderByConstraint
+        | QueryFieldFilterConstraint
+        | QueryStartAtConstraint
+      )[] = [orderBy('createdAt', 'desc')];
 
-      /**
-       * 일반 페이지 => 삭제된 것 제외하고 보여준다. => showDeleted = false
-       * 어드민 페이지 => 삭제된 것 포함해서 보여준다. => showDeleted = true
-       */
-      const filteredDB = showDeleted
-        ? [...hasCreatedAt, ...noCreatedAt]
-        : hasCreatedAt;
-
-      const limit = 15; // 15개씩 끊겠다.
-      const fromIndex =
-        filteredDB.findIndex((product) => product.id === cursor) + 1;
-
-      return filteredDB.slice(fromIndex, fromIndex + limit) || [];
-    },
-    product: (parent, { id }, { db }, info) => {
-      const found = db.products.find((item) => item.id === id);
-
-      if (found) {
-        return found;
+      if (cursor) {
+        queryOptions.push(startAfter(cursor));
       }
 
-      return null;
+      if (!showDeleted) {
+        queryOptions.unshift(where('createdAt', '!=', null));
+      }
+
+      const q = query(products, ...queryOptions, limit(PAGE_SIZE));
+      const snapshot = await getDocs(q);
+      const data: DocumentData = [];
+
+      snapshot.forEach((doc) =>
+        data.push({
+          id: doc.id,
+          ...doc.data(),
+        })
+      );
+
+      return data;
+    },
+    product: async (parent, { id }) => {
+      const snapshot = await getDoc(doc(db, 'products', id));
+
+      return {
+        id: snapshot.id,
+        ...snapshot.data(),
+      };
     },
   },
   Mutation: {
