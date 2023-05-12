@@ -1,3 +1,5 @@
+import { DocumentData, collection, getDoc, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase';
 import { DBField, writeDB } from '../dbController';
 import { Cart, Resolver } from './types';
 
@@ -5,8 +7,20 @@ const setJSON = (data: Cart) => writeDB(DBField.CART, data);
 
 const cartResolver: Resolver = {
   Query: {
-    cart: (parent, args, { db }) => {
-      return db.cart;
+    cart: async () => {
+      const cart = collection(db, 'cart');
+      const snapshot = await getDocs(cart);
+      const data: DocumentData = [];
+
+      snapshot.forEach((doc) => {
+        const d = doc.data();
+        data.push({
+          id: doc.id,
+          ...d,
+        });
+      });
+
+      return data;
     },
   },
   Mutation: {
@@ -100,8 +114,15 @@ const cartResolver: Resolver = {
     },
   },
   CartItem: {
-    product: (cartItem, args, { db }) =>
-      db.products.find((product: any) => product.id === cartItem.id),
+    product: async (cartItem) => {
+      const product = await getDoc(cartItem.product);
+      const data: any = product.data();
+
+      return {
+        id: product.id,
+        ...data,
+      };
+    },
   },
 };
 
