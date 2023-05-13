@@ -32,7 +32,8 @@ const productResolver: Resolver = {
       )[] = [orderBy('createdAt', 'desc')];
 
       if (cursor) {
-        queryOptions.push(startAfter(cursor));
+        const snapshot = await getDoc(doc(db, 'products', cursor));
+        queryOptions.push(startAfter(snapshot));
       }
 
       if (!showDeleted) {
@@ -88,7 +89,10 @@ const productResolver: Resolver = {
       }
 
       // write db
-      await updateDoc(productRef, data);
+      await updateDoc(productRef, {
+        ...data,
+        createdAt: serverTimestamp(),
+      });
 
       const snapshot = await getDoc(productRef);
 
