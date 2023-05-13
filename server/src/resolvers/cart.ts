@@ -12,10 +12,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { DBField, writeDB } from '../dbController';
-import { Cart, Resolver } from './types';
-
-const setJSON = (data: Cart) => writeDB(DBField.CART, data);
+import { Product, Resolver } from './types';
 
 const cartResolver: Resolver = {
   Query: {
@@ -101,32 +98,36 @@ const cartResolver: Resolver = {
 
       return cartId;
     },
-    executePay: (parent, { ids }, { db }) => {
-      const newCartData = db.cart.filter(
-        (cartItem) => !ids.includes(cartItem.id)
-      );
-
+    executePay: async (parent, { ids }) => {
       /**
-       * 삭제 동기화
-       * 만일 사용자가 결제 페이지에서 결제를 진행 중에
-       * 삭제된 상품이 생겼고, 이를 결제 항목 중에 포함하는 경우 예외 처리!
+       * createdAt이 비어있지 않은 ids들에 대해서
+       * 결제처리가 완료되었다고 가정하고
+       * cart에서 대상 ids를 지워준다.
        */
-      if (
-        newCartData.some((item) => {
-          const product = db.products.find(
-            (product: any) => product.id === item.id
-          );
-          return !product?.createdAt;
-        })
-      ) {
-        throw Error('삭제된 상품이 포함되어 결제를 진행할 수 없습니다.');
+      const deleted = [];
+      for await (const id of ids) {
+        const cartRef = doc(db, 'cart', id);
+        const cartSnapshot = await getDoc(cartRef);
+        const cartData = cartSnapshot.data();
+        const productRef = cartData?.product;
+
+        if (!productRef) {
+          throw Error('상품 정보가 없습니다.');
+        }
+
+        const product = (await getDoc(productRef)).data() as Product;
+
+        if (!product) {
+          throw Error('상품 정보가 없습니다.');
+        }
+
+        if (product.createdAt) {
+          await deleteDoc(cartRef);
+          deleted.push(id);
+        }
       }
 
-      // write db
-      db.cart = newCartData;
-      setJSON(db.cart);
-
-      return ids;
+      return deleted;
     },
   },
   CartItem: {
